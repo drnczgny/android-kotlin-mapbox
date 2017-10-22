@@ -43,7 +43,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-
     implementation 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.1'
 
     implementation 'com.google.dagger:dagger:2.11'
@@ -82,6 +81,10 @@ dependencies {
     //3rd party
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     testImplementation 'org.mockito:mockito-core:2.8.9'
+
+    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.2.0-beta.2@aar') {
+        transitive = true
+    }
 
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'

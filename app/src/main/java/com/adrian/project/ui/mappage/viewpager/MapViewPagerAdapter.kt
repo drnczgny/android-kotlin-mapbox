@@ -2,7 +2,7 @@ package com.adrian.project.ui.mappage.viewpager
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.app.FragmentPagerAdapter
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragment
 
 /**
@@ -10,7 +10,7 @@ import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragme
  */
 
 class MapViewPagerAdapter
-constructor(val fm: FragmentManager, val mapViewPagerDataModel: MapViewPagerDataModel) : FragmentStatePagerAdapter(fm) {
+constructor(val fm: FragmentManager, val mapViewPagerDataModel: MapViewPagerDataModel) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         when (position) {

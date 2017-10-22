@@ -47,6 +47,9 @@ class SRAllMapPageFragment : Fragment(), SRAllMapPageRouter {
         binding?.viewModel = viewModel
         binding?.executePendingBindings()
 
+        binding.mapView.onCreate(savedInstanceState);
+//        binding.mapView.onStart();
+
         return view
     }
 
