@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import com.adrian.project.BR
 import com.adrian.project.R
 import com.adrian.project.databinding.FragmentSrFavoritesMapPageBinding
-import com.adrian.project.ui.mappage.subpages.favoritesmappage.view.SRFavoritesMapPageFragment.name.TAG
+import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragment
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.viewmodel.SRFavoritesMapViewModel
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
+
+
 
 class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
 
@@ -29,14 +31,14 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
         }
     }
 
-    object name {
+    object logging {
         val TAG = SRFavoritesMapPageFragment::class.java.simpleName
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidSupportInjection.inject(this)
-        Log.i(TAG, "onCreate()")
+        Log.i(logging.TAG, "onCreate()")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +48,52 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
         binding?.viewModel = viewModel
         binding?.executePendingBindings()
 
+        binding.mapView.onCreate(savedInstanceState);
+
         return view
+    }
+
+    override fun onStart() {
+        Log.e(logging.TAG, "onStart ...");
+        super.onStart()
+        binding.mapView.onStart();
+    }
+
+    override fun onResume() {
+        Log.e(logging.TAG, "onResume ...");
+        super.onResume()
+        binding.mapView.onResume();
+    }
+
+    override fun onPause() {
+        Log.e(logging.TAG, "    override fun onPause() {\n ...");
+        super.onPause()
+        binding.mapView.onPause();
+    }
+
+    override fun onStop() {
+        Log.e(logging.TAG, "onStop ...");
+        super.onStop()
+        binding.mapView.onStop();
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        Log.e(SRAllMapPageFragment.logging.TAG, "onSaveInstanceState ...");
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState);
+    }
+
+    override fun onLowMemory() {
+        Log.e(logging.TAG, "onLowMemory ...");
+        super.onLowMemory()
+        binding.mapView.onLowMemory();
+    }
+
+    override fun onDestroy() {
+        Log.e(logging.TAG, "onDestroy ...");
+        viewModel.onDestroy()
+        super.onDestroy()
+        binding.mapView.onDestroy();
     }
 
     fun getLayoutId() = R.layout.fragment_sr_favorites_map_page

@@ -2,17 +2,26 @@ package com.adrian.project.ui.mappage.recyclerview
 
 import android.databinding.BindingAdapter
 import android.util.Log
+import com.adrian.project.R
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 
 /**
  * Created by cadri on 2017. 10. 22..
  */
 
 
+
 @BindingAdapter(value = *arrayOf("onStart"))
-fun  setMapOnStart(mapView: MapView, value: Int) {
-    Log.e("MapBoxBindingAdapter", "onStart.....")
-    mapView.onStart()
+fun  setAddMarker(mapView: MapView, value: Int) {
+    mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
+        mapboxMap.addMarker(MarkerOptions()
+                .position(LatLng(48.13863, 11.57603))
+                .title(mapView.context.getString(R.string.draw_marker_options_title))
+                .snippet(mapView.context.getString(R.string.draw_marker_options_snippet)))
+    })
 }
 
 @BindingAdapter(value = *arrayOf("onResume"))

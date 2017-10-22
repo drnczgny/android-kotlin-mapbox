@@ -6,6 +6,7 @@ import com.adrian.project.ui.mappage.subpages.allmappage.service.AllMapService
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragment
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageRouter
 import com.adrian.project.ui.mappage.subpages.allmappage.viewmodel.SRAllMapPageViewModel
+import com.adrian.project.ui.mappage.subpages.map.MapController
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -33,6 +34,6 @@ class SRAllMapPageModule {
 
     @FragmentScope
     @Provides
-    fun providesSRAllMapPageViewModel(model: SRAllMapPageModel, router: SRAllMapPageRouter)
-            = SRAllMapPageViewModel(model, router)
+    fun providesSRAllMapPageViewModel(model: SRAllMapPageModel, router: SRAllMapPageRouter, mapController: MapController)
+            = SRAllMapPageViewModel(model, router, mapController)
 }
