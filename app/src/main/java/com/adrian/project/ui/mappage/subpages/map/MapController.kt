@@ -1,5 +1,6 @@
 package com.adrian.project.ui.mappage.subpages.map
 
+import android.os.Bundle
 import com.mapbox.mapboxsdk.maps.MapView
 
 /**
@@ -16,5 +17,28 @@ interface MapController {
     fun addMarker(lat: Double, lon: Double)
 
     fun clearMap()
+
+
+    // Lifecycle methods
+
+    fun onCreate(outState: Bundle?)
+
+    fun onStart()
+
+    fun onResume()
+
+    fun onPause()
+
+    fun onStop()
+
+    fun onSaveInstanceState(outState: Bundle)
+
+    fun onLowMemory()
+
+    fun onDestroy()
+
+
+
+
 
 }

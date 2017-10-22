@@ -8,6 +8,8 @@ import com.adrian.project.ui.mappage.subpages.favoritesmappage.service.Favorites
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.view.SRFavoritesMapPageFragment
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.view.SRFavoritesMapPageRouter
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.viewmodel.SRFavoritesMapViewModel
+import com.adrian.project.ui.mappage.subpages.map.MapBoxMap
+import com.adrian.project.ui.mappage.subpages.map.MapController
 import com.mapbox.mapboxsdk.Mapbox
 import dagger.Module
 import dagger.Provides
@@ -35,7 +37,14 @@ class SRFavoritesMapPageModule {
 
     @FragmentScope
     @Provides
-    fun providesSRFavoritesMapPageViewModel(router: SRFavoritesMapPageRouter, model: SRFavoritesMapPageModel) = SRFavoritesMapViewModel(router, model)
+    fun providesSRFavoritesMapPageViewModel(router: SRFavoritesMapPageRouter, model: SRFavoritesMapPageModel, mapController: MapController)
+            = SRFavoritesMapViewModel(router, model, mapController)
+
+    @FragmentScope
+    @Provides
+    fun providesMapBoxMap(): MapController {
+        return MapBoxMap()
+    }
 
     @FragmentScope
     @Provides

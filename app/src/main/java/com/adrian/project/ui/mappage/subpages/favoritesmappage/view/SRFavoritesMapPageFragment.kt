@@ -12,6 +12,7 @@ import com.adrian.project.R
 import com.adrian.project.databinding.FragmentSrFavoritesMapPageBinding
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragment
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.viewmodel.SRFavoritesMapViewModel
+import com.adrian.project.ui.mappage.subpages.map.MapController
 import com.mapbox.mapboxsdk.Mapbox
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -24,7 +25,11 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
     lateinit var viewModel: SRFavoritesMapViewModel
 
     @Inject
+    lateinit var mapController: MapController
+
+    @Inject
     lateinit var mapBox: Mapbox
+
 
     lateinit var binding: FragmentSrFavoritesMapPageBinding
 
@@ -52,7 +57,8 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
         binding?.viewModel = viewModel
         binding?.executePendingBindings()
 
-        binding.mapView.onCreate(savedInstanceState);
+        mapController.setMap(binding.mapView)
+        mapController.onCreate(savedInstanceState);
 
         return view
     }
@@ -60,43 +66,43 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
     override fun onStart() {
         Log.e(logging.TAG, "onStart ...");
         super.onStart()
-        binding.mapView.onStart();
+        mapController.onStart();
     }
 
     override fun onResume() {
         Log.e(logging.TAG, "onResume ...");
         super.onResume()
-        binding.mapView.onResume();
+        mapController.onResume();
     }
 
     override fun onPause() {
         Log.e(logging.TAG, "onPause ...");
         super.onPause()
-        binding.mapView.onPause();
+        mapController.onPause();
     }
 
     override fun onStop() {
         Log.e(logging.TAG, "onStop ...");
         super.onStop()
-        binding.mapView.onStop();
+        mapController.onStop();
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.e(SRAllMapPageFragment.logging.TAG, "onSaveInstanceState ...");
         super.onSaveInstanceState(outState)
-        binding.mapView.onSaveInstanceState(outState);
+        mapController.onSaveInstanceState(outState);
     }
 
     override fun onLowMemory() {
         Log.e(logging.TAG, "onLowMemory ...");
-        binding.mapView.onLowMemory();
         super.onLowMemory()
+        mapController.onLowMemory();
     }
 
     override fun onDestroy() {
         Log.e(logging.TAG, "onDestroy ...");
         viewModel.onDestroy()
-        binding.mapView.onDestroy();
+        mapController.onDestroy();
         super.onDestroy()
     }
 

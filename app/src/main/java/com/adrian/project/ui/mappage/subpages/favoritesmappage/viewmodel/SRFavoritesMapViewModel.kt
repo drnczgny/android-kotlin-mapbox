@@ -7,12 +7,16 @@ import com.adrian.project.base.BaseViewModel
 import com.adrian.project.base.ListItemViewModel
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.model.SRFavoritesMapPageModel
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.view.SRFavoritesMapPageRouter
+import com.adrian.project.ui.mappage.subpages.map.MapController
 
 /**
  * Created by cadri on 2017. 08. 16..
  */
 
-class SRFavoritesMapViewModel constructor(val router: SRFavoritesMapPageRouter, val model: SRFavoritesMapPageModel) : BaseViewModel(), SRFavoritesMapPageModel.Callback {
+class SRFavoritesMapViewModel
+constructor(val router: SRFavoritesMapPageRouter,
+            val model: SRFavoritesMapPageModel,
+            val mapController: MapController) : BaseViewModel(), SRFavoritesMapPageModel.Callback {
 
     @Bindable
     var comments: List<ListItemViewModel> = ArrayList<ListItemViewModel>()
