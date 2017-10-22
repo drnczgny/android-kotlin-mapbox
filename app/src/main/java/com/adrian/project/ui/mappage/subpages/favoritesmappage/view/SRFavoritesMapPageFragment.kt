@@ -70,7 +70,7 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
     }
 
     override fun onPause() {
-        Log.e(logging.TAG, "    override fun onPause() {\n ...");
+        Log.e(logging.TAG, "onPause ...");
         super.onPause()
         binding.mapView.onPause();
     }
