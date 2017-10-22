@@ -20,7 +20,6 @@ constructor(val model: SRAllMapPageModel,
             val router: SRAllMapPageRouter,
             val mapController: MapController) : BaseViewModel(), SRAllMapPageModel.Callback {
 
-
     object logging {
         val TAG = SRAllMapPageViewModel::class.java.simpleName
     }

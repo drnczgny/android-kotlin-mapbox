@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">android-kotlin-viewpager</string>
+    <string name="app_name">android-kotlin-mapbox</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="map_box_token">pk.eyJ1IjoiYWRyaWFuMTA3IiwiYSI6ImNqOTJzcjVvajExZW0ycXA2bjhwcGVkYzIifQ.YjsKt2q7zmkEy1A0XcPJlA</string>
 
 
     <!-- ************************************************************************************************************************************ -->

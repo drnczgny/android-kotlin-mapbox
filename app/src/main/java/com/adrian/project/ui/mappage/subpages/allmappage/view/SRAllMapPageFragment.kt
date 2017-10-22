@@ -12,6 +12,7 @@ import com.adrian.project.R
 import com.adrian.project.databinding.FragmentSrAllMapPageBinding
 import com.adrian.project.ui.mappage.subpages.allmappage.viewmodel.SRAllMapPageViewModel
 import com.adrian.project.ui.mappage.subpages.map.MapController
+import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
@@ -26,6 +27,9 @@ class SRAllMapPageFragment : Fragment(), SRAllMapPageRouter {
 
     @Inject
     lateinit var mapController: MapController
+
+    @Inject
+    lateinit var mapBox: Mapbox
 
     lateinit var binding: FragmentSrAllMapPageBinding
 
@@ -107,9 +111,9 @@ class SRAllMapPageFragment : Fragment(), SRAllMapPageRouter {
 
     override fun onDestroy() {
         Log.e(logging.TAG, "onDestroy ...");
-        viewModel.onDestroy()
         super.onDestroy()
         binding.mapView.onDestroy();
+        viewModel.onDestroy()
     }
 
 

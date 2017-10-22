@@ -12,6 +12,7 @@ import com.adrian.project.R
 import com.adrian.project.databinding.FragmentSrFavoritesMapPageBinding
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageFragment
 import com.adrian.project.ui.mappage.subpages.favoritesmappage.viewmodel.SRFavoritesMapViewModel
+import com.mapbox.mapboxsdk.Mapbox
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -21,6 +22,9 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
 
     @Inject
     lateinit var viewModel: SRFavoritesMapViewModel
+
+    @Inject
+    lateinit var mapBox: Mapbox
 
     lateinit var binding: FragmentSrFavoritesMapPageBinding
 
@@ -85,15 +89,15 @@ class SRFavoritesMapPageFragment : Fragment(), SRFavoritesMapPageRouter {
 
     override fun onLowMemory() {
         Log.e(logging.TAG, "onLowMemory ...");
-        super.onLowMemory()
         binding.mapView.onLowMemory();
+        super.onLowMemory()
     }
 
     override fun onDestroy() {
         Log.e(logging.TAG, "onDestroy ...");
         viewModel.onDestroy()
-        super.onDestroy()
         binding.mapView.onDestroy();
+        super.onDestroy()
     }
 
     fun getLayoutId() = R.layout.fragment_sr_favorites_map_page

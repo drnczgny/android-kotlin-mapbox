@@ -3,7 +3,6 @@ package com.adrian.project
 import android.app.Activity
 import android.app.Application
 import com.adrian.project.di.DaggerAppComponent
-import com.mapbox.mapboxsdk.Mapbox
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -21,7 +20,7 @@ class MyApplication : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
-        Mapbox.getInstance(this, "pk.eyJ1IjoiYWRyaWFuMTA3IiwiYSI6ImNqOTJzcjVvajExZW0ycXA2bjhwcGVkYzIifQ.YjsKt2q7zmkEy1A0XcPJlA");
+//        Mapbox.getInstance(this, "map_box_token");
         DaggerAppComponent
                 .builder()
                 .application(this)
