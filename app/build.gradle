@@ -87,6 +87,9 @@ dependencies {
         transitive = true
     }
 
+    // location
+    compile 'com.github.delight-im:Android-SimpleLocation:v1.0.1'
+
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
     androidTestImplementation 'com.android.support.test:runner:1.0.0'

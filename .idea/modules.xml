@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/android-kotlin-mapbox.iml" filepath="$PROJECT_DIR$/android-kotlin-mapbox.iml" />
       <module fileurl="file://C:\Users\cadri\AndroidStudioProjects\android-kotlin-mapbox\android-kotlin-viewpager.iml" filepath="C:\Users\cadri\AndroidStudioProjects\android-kotlin-mapbox\android-kotlin-viewpager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\cadri\AndroidStudioProjects\android-kotlin-mapbox\app\app.iml" filepath="C:\Users\cadri\AndroidStudioProjects\android-kotlin-mapbox\app\app.iml" />
     </modules>
   </component>
 </project>

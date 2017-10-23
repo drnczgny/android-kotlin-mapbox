@@ -13,6 +13,7 @@ import com.adrian.project.ui.mappage.subpages.map.MapController
 import com.mapbox.mapboxsdk.Mapbox
 import dagger.Module
 import dagger.Provides
+import im.delight.android.location.SimpleLocation
 import retrofit2.Retrofit
 import javax.inject.Named
 
@@ -42,8 +43,8 @@ class SRFavoritesMapPageModule {
 
     @FragmentScope
     @Provides
-    fun providesMapBoxMap(): MapController {
-        return MapBoxMap()
+    fun providesMapBoxMap(fragment: SRFavoritesMapPageFragment, simpleLocation: SimpleLocation): MapController {
+        return MapBoxMap(fragment, simpleLocation)
     }
 
     @FragmentScope

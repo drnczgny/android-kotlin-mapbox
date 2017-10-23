@@ -26,30 +26,48 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="all map" />
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:onClick="@{viewModel::onClickAddPin}"
+                    android:text="Add pin"
+                    android:textAllCaps="false"
+                    android:textSize="10sp" />
 
                 <Button
                     android:layout_width="80dp"
                     android:layout_height="40dp"
-                    android:textSize="10sp"
-                    android:text="Add pin"
+                    android:onClick="@{viewModel::onClickCurrentLocataion}"
+                    android:text="Curr loc"
                     android:textAllCaps="false"
-                    android:onClick="@{viewModel::onClickAddPin}"/>
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
-            <com.mapbox.mapboxsdk.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                mapbox:mapbox_cameraTargetLat="40.73581"
-                mapbox:mapbox_cameraTargetLng="-73.99155"
-                mapbox:mapbox_cameraZoom="11"
-                mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.mapbox.mapboxsdk.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    mapbox:mapbox_cameraTargetLat="40.73581"
+                    mapbox:mapbox_cameraTargetLng="-73.99155"
+                    mapbox:mapbox_cameraZoom="11"
+                    mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:padding="10dp"
+                    android:src="@android:drawable/ic_menu_mylocation"
+                    android:onClick="@{viewModel::onClickCurrentLocataion}" />
+
+            </RelativeLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 </layout>

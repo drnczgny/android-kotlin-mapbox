@@ -13,6 +13,7 @@ import com.adrian.project.ui.mappage.subpages.map.MapController
 import com.mapbox.mapboxsdk.Mapbox
 import dagger.Module
 import dagger.Provides
+import im.delight.android.location.SimpleLocation
 import retrofit2.Retrofit
 import javax.inject.Named
 
@@ -38,8 +39,8 @@ class SRAllMapPageModule {
 
     @FragmentScope
     @Provides
-    fun providesMapBoxMap(): MapController {
-        return MapBoxMap()
+    fun providesMapBoxMap(fragment: SRAllMapPageFragment, simpleLocation: SimpleLocation): MapController {
+        return MapBoxMap(fragment, simpleLocation)
     }
 
     @FragmentScope
@@ -52,4 +53,9 @@ class SRAllMapPageModule {
     fun provideMapBox(@Named("ApplicationContext") context: Context): Mapbox {
         return Mapbox.getInstance(context, context.getString(R.string.map_box_token));
     }
+
+//    @FragmentScope
+//    @Provides
+//    fun provideSimpleLocation(sRAllMapPageFragment: SRAllMapPageFragment): SimpleLocation
+//            = SimpleLocation(sRAllMapPageFragment.context)
 }

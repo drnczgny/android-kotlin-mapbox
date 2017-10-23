@@ -63,7 +63,7 @@ class SRAllMapPageFragment : Fragment(), SRAllMapPageRouter {
     override fun onStart() {
         Log.e(logging.TAG, "onStart ...");
         super.onStart()
-        binding.mapView.onStart();
+        mapController.onStart();
     }
 
     override fun onResume() {
@@ -101,7 +101,6 @@ class SRAllMapPageFragment : Fragment(), SRAllMapPageRouter {
         mapController.onDestroy()
         super.onDestroy()
     }
-
 
     fun getLayoutId() = R.layout.fragment_sr_all_map_page
 

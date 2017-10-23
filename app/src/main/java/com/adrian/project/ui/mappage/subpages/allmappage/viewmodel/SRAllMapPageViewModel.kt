@@ -48,6 +48,11 @@ constructor(val model: SRAllMapPageModel,
         }
     }
 
+    fun onClickCurrentLocataion(view: View) {
+        Log.e(logging.TAG, "onClickCurrentLocataion ...");
+        mapController.showCurrentLocation()
+    }
+
     fun onCreateView() {
     }
 

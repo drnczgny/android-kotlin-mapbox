@@ -2,6 +2,7 @@ package com.adrian.project.ui.mappage.subpages.map
 
 import android.os.Bundle
 import com.mapbox.mapboxsdk.maps.MapView
+import im.delight.android.location.SimpleLocation
 
 /**
  * Created by cadri on 2017. 10. 22..
@@ -14,7 +15,13 @@ interface MapController {
      */
     fun setMap(mapView: MapView)
 
+    fun getCurrentLocation()
+
+    fun showCurrentLocation()
+
     fun addMarker(lat: Double, lon: Double)
+
+    fun addMarker(location: SimpleLocation.Point)
 
     fun clearMap()
 
