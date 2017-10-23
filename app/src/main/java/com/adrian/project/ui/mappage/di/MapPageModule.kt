@@ -50,5 +50,4 @@ class MapPageModule {
     @Provides
     fun provideSimpleLocation(@Named("ApplicationContext") context: Context): SimpleLocation
             = SimpleLocation(context)
-
 }

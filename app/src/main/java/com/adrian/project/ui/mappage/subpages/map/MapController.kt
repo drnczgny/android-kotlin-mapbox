@@ -1,6 +1,7 @@
 package com.adrian.project.ui.mappage.subpages.map
 
 import android.os.Bundle
+import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.maps.MapView
 import im.delight.android.location.SimpleLocation
 
@@ -10,23 +11,44 @@ import im.delight.android.location.SimpleLocation
 
 interface MapController {
 
-    /***
+    /**
      * Set/init map from fragment
      */
     fun setMap(mapView: MapView)
 
+    /**
+     * Get current location
+     */
     fun getCurrentLocation()
 
+    /**
+     * Show and animate to current location
+     */
     fun showCurrentLocation()
 
-    fun addMarker(lat: Double, lon: Double)
+    /**
+     * Add marker to map
+     */
+    fun addMarker(location: SimpleLocation.Point, title: String, snippet: String)
 
+    /**
+     * Add marker to map
+     */
     fun addMarker(location: SimpleLocation.Point)
 
+    /**
+     * Animate camera to a position
+     */
+    fun animateCameraToPosition(cameraPosition: CameraPosition, duration: Int = 2000)
+
+    /**
+     * Clear markers from map
+     */
     fun clearMap()
 
-
+    // ---------------------------------------------------------------------------------
     // Lifecycle methods
+    // ---------------------------------------------------------------------------------
 
     fun onCreate(outState: Bundle?)
 
@@ -43,9 +65,4 @@ interface MapController {
     fun onLowMemory()
 
     fun onDestroy()
-
-
-
-
-
 }

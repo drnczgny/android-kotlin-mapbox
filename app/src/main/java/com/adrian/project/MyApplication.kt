@@ -3,6 +3,7 @@ package com.adrian.project
 import android.app.Activity
 import android.app.Application
 import com.adrian.project.di.DaggerAppComponent
+import com.mapbox.mapboxsdk.Mapbox
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -17,6 +18,9 @@ class MyApplication : Application(), HasActivityInjector {
 
     @Inject
     lateinit var activityDispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var mapbox: Mapbox
 
     override fun onCreate() {
         super.onCreate()

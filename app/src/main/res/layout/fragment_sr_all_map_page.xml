@@ -61,13 +61,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="70dp"
+                    android:onClick="@{viewModel::onClickCurrentLocataion}"
                     android:padding="10dp"
-                    android:src="@android:drawable/ic_menu_mylocation"
-                    android:onClick="@{viewModel::onClickCurrentLocataion}" />
+                    android:src="@android:drawable/ic_menu_mylocation" />
 
             </RelativeLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 </layout>

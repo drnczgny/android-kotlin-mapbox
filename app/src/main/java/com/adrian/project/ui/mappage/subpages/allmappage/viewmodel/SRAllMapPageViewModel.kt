@@ -10,6 +10,7 @@ import com.adrian.project.base.ListItemViewModel
 import com.adrian.project.ui.mappage.subpages.allmappage.model.SRAllMapPageModel
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageRouter
 import com.adrian.project.ui.mappage.subpages.map.MapController
+import im.delight.android.location.SimpleLocation
 
 /**
  * Created by cadri on 2017. 08. 06..
@@ -44,7 +45,7 @@ constructor(val model: SRAllMapPageModel,
         for (i in 1..20) {
             lat = lat + 0.1
             lon = lon + 0.1
-            mapController.addMarker(lat, lon)
+            mapController.addMarker(SimpleLocation.Point(lat, lon))
         }
     }
 

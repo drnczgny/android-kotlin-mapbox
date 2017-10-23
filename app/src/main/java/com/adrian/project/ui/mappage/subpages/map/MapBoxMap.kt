@@ -2,6 +2,7 @@ package com.adrian.project.ui.mappage.subpages.map
 
 import android.Manifest
 import android.animation.TypeEvaluator
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -36,6 +37,10 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     override fun onCreate(outState: Bundle?) {
         Log.e(logging.TAG, "onStart ...");
         mapView.onCreate(outState);
+        getCurrentLocation()
+        addMarker(currentPosition, "Current position", "Budapest")
+//        showCurrentLocation()
+
     }
 
     override fun onStart() {
@@ -73,12 +78,12 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
         mapView.onDestroy();
     }
 
-    override fun addMarker(lat: Double, lon: Double) {
+    override fun addMarker(location: SimpleLocation.Point, title: String, snippet: String) {
         mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
             mapboxMap.addMarker(MarkerOptions()
-                    .position(LatLng(lat, lon))
-                    .title("asdasdasd")
-                    .snippet("asdasd"))
+                    .position(LatLng(location.latitude, location.longitude))
+                    .title(title)
+                    .snippet(snippet))
         })
     }
 
@@ -92,41 +97,45 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     }
 
     override fun getCurrentLocation() {
-        if (!simpleLocation.hasLocationEnabled()) {
-            // ask the user to enable location access
-            SimpleLocation.openSettings(fragment.context);
+        if (Build.VERSION.SDK_INT < 23) {
+            if (!simpleLocation.hasLocationEnabled()) {
+                // ask the user to enable location access
+                SimpleLocation.openSettings(fragment.context);
+            }
+        } else {
+            ActivityCompat.requestPermissions(fragment.activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
-        ActivityCompat.requestPermissions(fragment.activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         simpleLocation.beginUpdates()
-        simpleLocation.setListener(SimpleLocation.Listener {
-            // new location data has been received and can be accessed
-            currentPosition = simpleLocation.getPosition()
-        })
         updateCurrentPosition(simpleLocation.getLatitude(), simpleLocation.getLongitude())
         simpleLocation.endUpdates()
     }
 
-    private fun updateCurrentPosition(lat: Double, lon: Double) {
-        currentPosition = SimpleLocation.Point(lat, lon)
-    }
-
     override fun showCurrentLocation() {
-        getCurrentLocation()
-
         mapView.getMapAsync { mapboxMap ->
             val position = CameraPosition.Builder()
                     .target(LatLng(currentPosition.latitude, currentPosition.longitude))
                     .zoom(14.0)
                     .tilt(30.0) // Set the camera tilt
                     .build() // Creates a CameraPosition from the builder
-
-            mapboxMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 2000)
-
+            animateCameraToPosition(position)
         }
-
-        addMarker(currentPosition.latitude, currentPosition.longitude)
     }
+
+    override fun animateCameraToPosition(cameraPosition: CameraPosition, duration: Int) {
+        mapView.getMapAsync { mapboxMap ->
+            mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(cameraPosition), duration)
+        }
+    }
+
+    override fun clearMap() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun updateCurrentPosition(lat: Double, lon: Double) {
+        currentPosition = SimpleLocation.Point(lat, lon)
+    }
+
 
 //    override fun showCurrentLocation() {
 //        mapView.getMapAsync { mapboxMap ->
@@ -171,9 +180,6 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
 //        }
 //    }
 
-    override fun clearMap() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private class LatLngEvaluator : TypeEvaluator<LatLng> {
         // Method is used to interpolate the marker animation.
