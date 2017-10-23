@@ -45,7 +45,7 @@ constructor(val model: SRAllMapPageModel,
         for (i in 1..20) {
             lat = lat + 0.1
             lon = lon + 0.1
-            mapController.addMarker(SimpleLocation.Point(lat, lon))
+            mapController.addMarkerWithView(SimpleLocation.Point(lat, lon))
         }
     }
 

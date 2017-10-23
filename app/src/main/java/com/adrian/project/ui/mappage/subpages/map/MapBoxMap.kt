@@ -7,75 +7,98 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.util.Log
+import com.adrian.project.R
+import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.annotations.MarkerViewOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import im.delight.android.location.SimpleLocation
 
 
 /**
+ * Mapbox native implementation
  * Created by cadri on 2017. 10. 22..
  */
 
 class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLocation) : MapController {
 
-    lateinit var mapView: MapView
-
-    lateinit var currentPosition: SimpleLocation.Point
-
-    object logging {
+    private object log {
         val TAG = MapBoxMap::class.java.simpleName
     }
+
+    private object static {
+        val DEFAULT_ZOOM_LEVEL: Double = 12.0
+    }
+
+    lateinit var mapView: MapView
+
+    lateinit var currentLocation: SimpleLocation.Point
 
     override fun setMap(mapView: MapView) {
         this.mapView = mapView
     }
 
     override fun onCreate(outState: Bundle?) {
-        Log.e(logging.TAG, "onStart ...");
+        Log.e(log.TAG, "onStart ...");
         mapView.onCreate(outState);
         getCurrentLocation()
-        addMarker(currentPosition, "Current position", "Budapest")
-//        showCurrentLocation()
+        addMarker(currentLocation, "Current position", "Budapest")
+        showStartingView()
 
+        setupOnMarkerClickListener()
     }
 
     override fun onStart() {
-        Log.e(logging.TAG, "onStart ...");
+        Log.e(log.TAG, "onStart ...");
         mapView.onStart();
     }
 
     override fun onResume() {
-        Log.e(logging.TAG, "onResume ...");
+        Log.e(log.TAG, "onResume ...");
         mapView.onResume();
     }
 
     override fun onPause() {
-        Log.e(logging.TAG, "onPause ...");
+        Log.e(log.TAG, "onPause ...");
         mapView.onPause();
     }
 
     override fun onStop() {
-        Log.e(logging.TAG, "onStop ...");
+        Log.e(log.TAG, "onStop ...");
         mapView.onStop();
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.e(logging.TAG, "onSaveInstanceState ...");
+        Log.e(log.TAG, "onSaveInstanceState ...");
         mapView.onSaveInstanceState(outState);
     }
 
     override fun onLowMemory() {
-        Log.e(logging.TAG, "onLowMemory ...");
+        Log.e(log.TAG, "onLowMemory ...");
         mapView.onLowMemory();
     }
 
     override fun onDestroy() {
-        Log.e(logging.TAG, "onDestroy ...");
+        Log.e(log.TAG, "onDestroy ...");
         mapView.onDestroy();
+    }
+
+
+    override fun showStartingView() {
+        val defaultCameraPosition = createNewCameraPosition(currentLocation, static.DEFAULT_ZOOM_LEVEL, 30.0)
+        animateCameraToPosition(defaultCameraPosition)
+    }
+
+    override fun addMarker(location: SimpleLocation.Point) {
+        mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
+            mapboxMap.addMarker(MarkerOptions()
+                    .position(LatLng(location.latitude, location.longitude)))
+        })
     }
 
     override fun addMarker(location: SimpleLocation.Point, title: String, snippet: String) {
@@ -87,24 +110,18 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
         })
     }
 
-    override fun addMarker(location: SimpleLocation.Point) {
+    override fun addMarkerWithView(location: SimpleLocation.Point) {
+        val icon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
+
         mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
-            mapboxMap.addMarker(MarkerOptions()
+            mapboxMap.addMarker(MarkerViewOptions()
                     .position(LatLng(location.latitude, location.longitude))
-                    .title("asdasdasd")
-                    .snippet("asdasd"))
+                    .icon(icon))
         })
     }
 
     override fun getCurrentLocation() {
-        if (Build.VERSION.SDK_INT < 23) {
-            if (!simpleLocation.hasLocationEnabled()) {
-                // ask the user to enable location access
-                SimpleLocation.openSettings(fragment.context);
-            }
-        } else {
-            ActivityCompat.requestPermissions(fragment.activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        }
+        requestForLocationPermission()
         simpleLocation.beginUpdates()
         updateCurrentPosition(simpleLocation.getLatitude(), simpleLocation.getLongitude())
         simpleLocation.endUpdates()
@@ -113,7 +130,7 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     override fun showCurrentLocation() {
         mapView.getMapAsync { mapboxMap ->
             val position = CameraPosition.Builder()
-                    .target(LatLng(currentPosition.latitude, currentPosition.longitude))
+                    .target(LatLng(currentLocation.latitude, currentLocation.longitude))
                     .zoom(14.0)
                     .tilt(30.0) // Set the camera tilt
                     .build() // Creates a CameraPosition from the builder
@@ -132,10 +149,37 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun updateCurrentPosition(lat: Double, lon: Double) {
-        currentPosition = SimpleLocation.Point(lat, lon)
+    private fun setupOnMarkerClickListener() {
+        mapView.getMapAsync { mapboxMap ->
+            mapboxMap.setOnMarkerClickListener(MapboxMap.OnMarkerClickListener { marker ->
+                Log.e(log.TAG, "marker click ...")
+                true
+            })
+        }
     }
 
+    private fun requestForLocationPermission() {
+        if (Build.VERSION.SDK_INT < 23) {
+            if (!simpleLocation.hasLocationEnabled()) {
+                SimpleLocation.openSettings(fragment.context);
+            }
+        } else {
+            ActivityCompat.requestPermissions(fragment.activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+    }
+
+    private fun createNewCameraPosition(location: SimpleLocation.Point, zoom: Double = 15.0, tilt: Double = 30.0): CameraPosition {
+        val cameraPosition = CameraPosition.Builder()
+                .target(LatLng(location.latitude, location.longitude))
+                .zoom(zoom)
+                .tilt(tilt) // Set the camera tilt
+                .build() // Creates a CameraPosition from the builder
+        return cameraPosition
+    }
+
+    private fun updateCurrentPosition(lat: Double, lon: Double) {
+        currentLocation = SimpleLocation.Point(lat, lon)
+    }
 
 //    override fun showCurrentLocation() {
 //        mapView.getMapAsync { mapboxMap ->
