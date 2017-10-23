@@ -46,6 +46,8 @@ constructor(val model: SRAllMapPageModel,
             lon = lon + 0.1
 //            mapController.addMarkerWithView(SimpleLocation.Point(lat, lon))
         }
+
+        mapController.clearMap()
         mapController.testData()
     }
 

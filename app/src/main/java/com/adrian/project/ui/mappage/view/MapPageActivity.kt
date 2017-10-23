@@ -18,6 +18,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
+
 class MapPageActivity : AppCompatActivity(), MapPageRouter, HasSupportFragmentInjector {
 
     @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
@@ -37,6 +38,7 @@ class MapPageActivity : AppCompatActivity(), MapPageRouter, HasSupportFragmentIn
         bind()
         setSupportActionBar(binding.toolbar)
         setupViewPager()
+
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {

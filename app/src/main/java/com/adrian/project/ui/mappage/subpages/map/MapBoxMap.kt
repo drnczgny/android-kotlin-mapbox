@@ -2,12 +2,14 @@ package com.adrian.project.ui.mappage.subpages.map
 
 import android.Manifest
 import android.animation.TypeEvaluator
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.util.Log
 import com.adrian.project.R
+import com.adrian.project.ui.mappage.model.MapPoint
 import com.mapbox.mapboxsdk.annotations.Icon
 import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
@@ -19,6 +21,9 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import im.delight.android.location.SimpleLocation
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 
 
 /**
@@ -43,6 +48,8 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
 
     lateinit var markerIcon: Icon
 
+    var listCoordinates: MutableList<MapPoint> = ArrayList<MapPoint>()
+
     var currentZoomLevel: Double = static.DEFAULT_ZOOM_LEVEL
 
     override fun setMap(mapView: MapView) {
@@ -53,7 +60,10 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
         Log.e(log.TAG, "onStart ...");
         mapView.onCreate(outState);
 
-        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_marker_icon_default)
+        readFromAssets(fragment.activity, "coordinates.txt")
+
+//        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_marker_icon_default)
+        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.icon_custom_location)
         setupCameraChangeListener()
 
         getCurrentLocation()
@@ -197,21 +207,11 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     private fun setupCameraChangeListener() {
         mapView.getMapAsync { mapboxMap ->
             mapboxMap.setOnCameraChangeListener(MapboxMap.OnCameraChangeListener { cameraPostion ->
-                //                if (cameraPostion.zoom > 16) {
-//                    markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
-//                } else {
-//
-//                    markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_default)
-//                }
                 var zoomLevelRangeChanged = zoomLevelRangeChanged(cameraPostion.zoom)
                 if (zoomLevelRangeChanged) {
                     if (currentZoomLevel > static.ZOOM_LEVEL_RANGE) {
-//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
-//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_info_icon_selected)
-                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.icon_custom_location)
+                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_markerview_icon_default)
                     } else {
-//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_marker_icon_default)
-//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_info_icon_default)
                         markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.icon_custom_location)
                     }
 
@@ -302,32 +302,31 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     }
 
     override fun testData() {
-//        val latRange = 0.0055
-//        val lonRange = 0.0055
-        val latRange = 0.0015
-        val lonRange = 0.0015
-        var lat = 47.447716
-        var lon = 19.019703
-        for (i in 1..200) {
-            addMarkerWithView(SimpleLocation.Point(lat, lon))
-            lat += latRange
-            lon += lonRange
+//        for (item in listCoordinates) {
+//            addMarkerWithView(SimpleLocation.Point(item.lat, item.lon))
+//        }
+        for (i in 0..listCoordinates.size-1) {
+            var item = listCoordinates.get(i)
+            addMarkerWithView(SimpleLocation.Point(item.lat, item.lon))
         }
     }
 
-//    override fun testData() {
-//        var mapPoint1 = MapPoint(47.497716, 19.099703)
-//        var mapPoint2 = MapPoint(47.553653, 19.040356)
-//        var mapPoint3 = MapPoint(47.486743, 19.094585)
-//        var mapPoint4 = MapPoint(47.533242, 19.078488)
-//        var mapPoint5 = MapPoint(47.509532, 19.003987)
-//        var mapPoint6 = MapPoint(47.524778, 19.046731)
-//        var mapPoint7 = MapPoint(47.456169, 19.099652)
-//        var list = listOf<MapPoint>(mapPoint1, mapPoint2, mapPoint3, mapPoint4, mapPoint5, mapPoint6, mapPoint7)
-//        for (item in list) {
-//            addMarkerWithView(SimpleLocation.Point(item.lat, item.lon))
-//        }
-//    }
+    @Throws(IOException::class)
+    private fun readFromAssets(context: Context, filename: String): String {
+        val reader = BufferedReader(InputStreamReader(context.getAssets().open(filename)))
+
+        val sb = StringBuilder()
+        var mLine = reader.readLine()
+        while (mLine != null) {
+            var array = mLine.split(",")
+            var mapPoint = MapPoint(array[1].toDouble(), array[3].toDouble())
+            listCoordinates.add(mapPoint)
+            sb.append(array[1] + "," + array[3]) // process line
+            mLine = reader.readLine()
+        }
+        reader.close()
+        return sb.toString()
+    }
 
     /** Callback that can be implemented in order to listen for events  */
     interface Listener {
