@@ -31,6 +31,9 @@ interface MapController {
 
     fun onDestroy()
 
+
+    fun testData()
+
     /**
      * Set/init map from fragment
      */

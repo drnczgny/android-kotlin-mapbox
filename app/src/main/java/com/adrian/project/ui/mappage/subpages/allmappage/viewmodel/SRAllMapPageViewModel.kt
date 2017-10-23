@@ -10,7 +10,6 @@ import com.adrian.project.base.ListItemViewModel
 import com.adrian.project.ui.mappage.subpages.allmappage.model.SRAllMapPageModel
 import com.adrian.project.ui.mappage.subpages.allmappage.view.SRAllMapPageRouter
 import com.adrian.project.ui.mappage.subpages.map.MapController
-import im.delight.android.location.SimpleLocation
 
 /**
  * Created by cadri on 2017. 08. 06..
@@ -40,18 +39,23 @@ constructor(val model: SRAllMapPageModel,
 
     fun onClickAddPin(view: View) {
         Log.e(logging.TAG, "onClickAddPin ...");
-        var lat: Double = 47.13863
-        var lon: Double = 11.57603
-        for (i in 1..20) {
+        var lat: Double = 46.13863
+        var lon: Double = 10.57603
+        for (i in 1..100) {
             lat = lat + 0.1
             lon = lon + 0.1
-            mapController.addMarkerWithView(SimpleLocation.Point(lat, lon))
+//            mapController.addMarkerWithView(SimpleLocation.Point(lat, lon))
         }
+        mapController.testData()
     }
 
     fun onClickCurrentLocataion(view: View) {
         Log.e(logging.TAG, "onClickCurrentLocataion ...");
         mapController.showCurrentLocation()
+    }
+
+    fun onClickClear(view: View) {
+        mapController.clearMap()
     }
 
     fun onCreateView() {

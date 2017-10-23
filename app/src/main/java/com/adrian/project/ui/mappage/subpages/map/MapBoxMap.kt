@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.util.Log
 import com.adrian.project.R
+import com.mapbox.mapboxsdk.annotations.Icon
 import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions
@@ -32,12 +33,17 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     }
 
     private object static {
-        val DEFAULT_ZOOM_LEVEL: Double = 12.0
+        val DEFAULT_ZOOM_LEVEL: Double = 10.0
+        val ZOOM_LEVEL_RANGE: Double = 12.0
     }
 
     lateinit var mapView: MapView
 
     lateinit var currentLocation: SimpleLocation.Point
+
+    lateinit var markerIcon: Icon
+
+    var currentZoomLevel: Double = static.DEFAULT_ZOOM_LEVEL
 
     override fun setMap(mapView: MapView) {
         this.mapView = mapView
@@ -46,8 +52,12 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     override fun onCreate(outState: Bundle?) {
         Log.e(log.TAG, "onStart ...");
         mapView.onCreate(outState);
+
+        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_marker_icon_default)
+        setupCameraChangeListener()
+
         getCurrentLocation()
-        addMarker(currentLocation, "Current position", "Budapest")
+        addCurrentLocationMarker(currentLocation, "Current position", "Budapest")
         showStartingView()
 
         setupOnMarkerClickListener()
@@ -110,8 +120,21 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
         })
     }
 
+    private fun addCurrentLocationMarker(location: SimpleLocation.Point, title: String, snippet: String) {
+        val icon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_default)
+
+        mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
+            mapboxMap.addMarker(MarkerViewOptions()
+                    .position(LatLng(location.latitude, location.longitude))
+                    .title(title)
+                    .snippet(snippet)
+                    .icon(icon))
+        })
+    }
+
     override fun addMarkerWithView(location: SimpleLocation.Point) {
-        val icon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
+//        val icon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
+        val icon = markerIcon
 
         mapView.getMapAsync(OnMapReadyCallback { mapboxMap ->
             mapboxMap.addMarker(MarkerViewOptions()
@@ -146,7 +169,20 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
     }
 
     override fun clearMap() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mapView.getMapAsync { mapboxMap ->
+            mapboxMap.clear()
+        }
+    }
+
+    private fun zoomLevelRangeChanged(zoomLevel: Double): Boolean {
+        var zoomLevelRangeChanged = false
+        if (currentZoomLevel < static.ZOOM_LEVEL_RANGE) {
+            zoomLevelRangeChanged = zoomLevel >= static.ZOOM_LEVEL_RANGE
+        } else {
+            zoomLevelRangeChanged = zoomLevel < static.ZOOM_LEVEL_RANGE
+        }
+        currentZoomLevel = zoomLevel
+        return zoomLevelRangeChanged
     }
 
     private fun setupOnMarkerClickListener() {
@@ -154,6 +190,34 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
             mapboxMap.setOnMarkerClickListener(MapboxMap.OnMarkerClickListener { marker ->
                 Log.e(log.TAG, "marker click ...")
                 true
+            })
+        }
+    }
+
+    private fun setupCameraChangeListener() {
+        mapView.getMapAsync { mapboxMap ->
+            mapboxMap.setOnCameraChangeListener(MapboxMap.OnCameraChangeListener { cameraPostion ->
+                //                if (cameraPostion.zoom > 16) {
+//                    markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
+//                } else {
+//
+//                    markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_default)
+//                }
+                var zoomLevelRangeChanged = zoomLevelRangeChanged(cameraPostion.zoom)
+                if (zoomLevelRangeChanged) {
+                    if (currentZoomLevel > static.ZOOM_LEVEL_RANGE) {
+//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_mylocation_icon_bearing)
+//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_info_icon_selected)
+                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.icon_custom_location)
+                    } else {
+//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_marker_icon_default)
+//                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.mapbox_info_icon_default)
+                        markerIcon = IconFactory.getInstance(fragment.activity).fromResource(R.drawable.icon_custom_location)
+                    }
+
+                    clearMap()
+                    testData()
+                }
             })
         }
     }
@@ -236,6 +300,34 @@ class MapBoxMap constructor(val fragment: Fragment, val simpleLocation: SimpleLo
             return latLng
         }
     }
+
+    override fun testData() {
+//        val latRange = 0.0055
+//        val lonRange = 0.0055
+        val latRange = 0.0015
+        val lonRange = 0.0015
+        var lat = 47.447716
+        var lon = 19.019703
+        for (i in 1..200) {
+            addMarkerWithView(SimpleLocation.Point(lat, lon))
+            lat += latRange
+            lon += lonRange
+        }
+    }
+
+//    override fun testData() {
+//        var mapPoint1 = MapPoint(47.497716, 19.099703)
+//        var mapPoint2 = MapPoint(47.553653, 19.040356)
+//        var mapPoint3 = MapPoint(47.486743, 19.094585)
+//        var mapPoint4 = MapPoint(47.533242, 19.078488)
+//        var mapPoint5 = MapPoint(47.509532, 19.003987)
+//        var mapPoint6 = MapPoint(47.524778, 19.046731)
+//        var mapPoint7 = MapPoint(47.456169, 19.099652)
+//        var list = listOf<MapPoint>(mapPoint1, mapPoint2, mapPoint3, mapPoint4, mapPoint5, mapPoint6, mapPoint7)
+//        for (item in list) {
+//            addMarkerWithView(SimpleLocation.Point(item.lat, item.lon))
+//        }
+//    }
 
     /** Callback that can be implemented in order to listen for events  */
     interface Listener {
